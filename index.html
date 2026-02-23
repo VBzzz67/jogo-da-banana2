@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <title>Coletor de Bananas | Jogo Interativo</title>
+    <meta name="description" content="Colete bananas no modo original ou teste seus reflexos no modo teclado!">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <meta property="og:title" content="Coletor de Bananas">
+    <meta property="og:description" content="Passe o mouse ou use o teclado para coletar bananas!">
+    <meta property="og:type" content="website">
+
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Estilo rápido para o menu não ficar bagunçado */
+        #menu {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 80vh;
+            gap: 20px;
+        }
+        .btn-modo {
+            padding: 20px 40px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            border-radius: 15px;
+            border: none;
+            background-color: #ffe135;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+        .btn-modo:hover {
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+
+<body class="page">
+
+<div id="menu">
+    <h1 class="header__title">Escolha seu Modo</h1>
+    <button class="btn-modo" onclick="iniciarJogo('original')">🍌 Modo Original (Mouse)</button>
+    <button class="btn-modo" onclick="iniciarJogo('tecla')">⌨️ Modo Tecla Banana</button>
+</div>
+
+<div id="game-container" style="display: none;">
+    <header class="header">
+        <h1 class="header__title">🍌 Coletor de Bananas</h1>
+        <p class="header__subtitle" id="instrucao">Prepare-se!</p>
+    </header>
+
+    <main class="game" role="main">
+        <section class="game__status" aria-live="polite">
+            <h2 class="game__counter">
+                Bananas: <span id="bananaCount">0</span>
+            </h2>
+        </section>
+
+        <section class="game__area" id="gameArea"></section>
+
+        <section class="game__reward" id="rewardSection" hidden>
+            <h2 class="game__reward-title">Parabéns!</h2>
+            <img id="rewardImage" class="game__reward-image" alt="Imagem de recompensa">
+        </section>
+
+        <section class="game__final" id="finalSection" hidden>
+            <h2 class="game__final-title">🎉 MUITO BEM! 🎉</h2>
+            <div class="game__final-images">
+                <img src="assets/foto1.jpg" alt="Foto 1">
+                <img src="assets/foto2.jpg" alt="Foto 2">
+                <img src="assets/foto3.jpg" alt="Foto 3">
+            </div>
+            <canvas id="confettiCanvas" class="game__confetti"></canvas>
+        </section>
+    </main>
+</div>
+
+<footer class="footer">
+    <p class="footer__text">© 2026 Coletor de Bananas</p>
+</footer>
+
+<script src="script.js" defer></script>
+</body>
+</html>

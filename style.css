@@ -1,0 +1,93 @@
+/* ===============================
+   VARIÁVEIS GLOBAIS
+================================= */
+:root {
+    --color-primary: #ffd54f;
+    --color-secondary: #ffb300;
+    --color-dark: #333;
+    --color-light: #fff;
+    --color-success: #4caf50;
+
+    --font-base: 'Segoe UI', sans-serif;
+    --transition-default: 0.3s ease-in-out;
+}
+
+/* Reset básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-base);
+    background: linear-gradient(to bottom, #fffde7, #fff8e1);
+    color: var(--color-dark);
+    text-align: center;
+    padding: 1rem;
+}
+
+/* ===============================
+   HEADER
+================================= */
+.header__title {
+    font-size: 1.8rem;
+}
+
+.header__subtitle {
+    margin-top: 0.5rem;
+    font-size: 1rem;
+}
+
+/* ===============================
+   GAME
+================================= */
+.game__area {
+    margin: 2rem 0;
+}
+
+.game__banana {
+    width: 120px;
+    cursor: pointer;
+    transition: transform var(--transition-default);
+}
+
+.game__banana:hover,
+.game__banana:focus {
+    transform: scale(1.2) rotate(-10deg);
+}
+
+/* Reward */
+.game__reward-image {
+    width: 90%;
+    max-width: 400px;
+    margin-top: 1rem;
+}
+
+/* Final */
+.game__final-images img {
+    width: 30%;
+    max-width: 200px;
+    margin: 0.5rem;
+}
+
+/* Confetti */
+.game__confetti {
+    position: fixed;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+}
+
+/* ===============================
+   RESPONSIVO (Desktop)
+================================= */
+@media (min-width: 768px) {
+    .header__title {
+        font-size: 2.5rem;
+    }
+
+    .game__banana {
+        width: 180px;
+    }
+}
