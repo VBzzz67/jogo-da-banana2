@@ -22,8 +22,15 @@ function iniciarJogo(modo) {
     document.getElementById('game-container').style.display = 'block';
     
     const instrucao = document.getElementById('instrucao');
+    
     if (gameMode === 'tecla') {
         instrucao.textContent = "Aperte a letra que está na banana!";
+        // Força o teclado no celular
+        const inputMobile = document.getElementById('mobileKeyboardTrigger');
+        if (inputMobile) {
+            inputMobile.focus();
+            inputMobile.click();
+        }
     } else {
         instrucao.textContent = "Passe o mouse nas bananas para coletar!";
     }
@@ -42,7 +49,6 @@ function iniciarJogo(modo) {
         setInterval(() => { if(gameActive) createFallingBanana('black') }, 5000);
         setInterval(() => { if(gameActive) criarItemEspecial() }, 35000);
     } else {
-        // No modo Tecla, as bananas são mais lentas
         setInterval(() => { if(gameActive) createFallingBanana('tecla') }, 1000);
     }
 }
@@ -53,12 +59,11 @@ function iniciarJogo(modo) {
 function createFallingBanana(type) {
     const container = document.createElement('div');
     container.className = 'banana-wrapper';
-    
     const banana = document.createElement('img');
     let letraSorteada = letras[Math.floor(Math.random() * letras.length)];
     
     if (type === 'black' || (type === 'yellow' && todasPretas)) {
-        banana.src = 'assets/banana-preta.svg'; //
+        banana.src = 'assets/banana-preta.svg';
         container.dataset.type = 'black';
     } else if (type === 'green') {
         banana.src = 'assets/banana-verde.svg';
@@ -86,47 +91,51 @@ function createFallingBanana(type) {
     document.body.appendChild(container);
 
     let topPos = -150;
-    let speed = (gameMode === 'tecla') ? 3 : (velocidadeRapida ? 15 : 6); // Mais lento no teclado
+    let speed = (gameMode === 'tecla') ? 3 : (velocidadeRapida ? 15 : 6);
 
     const fallInterval = setInterval(() => {
         topPos += speed;
         container.style.top = topPos + 'px';
-        
         if (topPos > window.innerHeight) {
             clearInterval(fallInterval);
-            // Perde vida apenas se a banana amarela ou de tecla sair da tela
-            if (container.dataset.type === 'yellow' || gameMode === 'tecla') {
-                perderVida();
-            }
+            if (container.dataset.type === 'yellow' || gameMode === 'tecla') perderVida();
             container.remove();
         }
     }, 20);
 
-    // EVENTO DE MOUSE: Só funciona se o modo for Original!
     container.addEventListener("mouseenter", () => {
-        if (gameMode === 'original') {
-            processarAcerto(container, fallInterval);
-        }
+        if (gameMode === 'original') processarAcerto(container, fallInterval);
     });
 }
 
 /* ==========================================
-   LÓGICA DE TECLADO
+   LÓGICA DE TECLADO (PC E CELULAR)
 ========================================== */
-window.addEventListener("keydown", (e) => {
+// Captura tanto o teclado físico quanto o virtual do celular
+document.addEventListener("keydown", (e) => {
     if (gameMode !== 'tecla' || !gameActive) return;
-    
-    const teclaPressionada = e.key.toUpperCase();
+    processarTecla(e.key.toUpperCase());
+});
+
+// Listener extra para o input do celular
+const inputMobile = document.getElementById('mobileKeyboardTrigger');
+if(inputMobile) {
+    inputMobile.addEventListener("input", (e) => {
+        const char = e.target.value.slice(-1).toUpperCase();
+        processarTecla(char);
+        e.target.value = ""; // Limpa para a próxima letra
+    });
+}
+
+function processarTecla(teclaPressionada) {
     const bananasNaTela = document.querySelectorAll('.banana-wrapper');
-    
-    // Procura a banana que tem a tecla apertada
     for (let b of bananasNaTela) {
         if (b.dataset.key === teclaPressionada) {
             processarAcerto(b);
-            break; // Garante que acerta uma por vez
+            break;
         }
     }
-});
+}
 
 function processarAcerto(bananaEl, interval = null) {
     const type = bananaEl.dataset.type;
@@ -139,39 +148,38 @@ function processarAcerto(bananaEl, interval = null) {
         document.getElementById('bananaCount').textContent = bananaCount;
         checkReward();
     }
-    // Para o movimento e remove a banana
     if (interval) clearInterval(interval);
     bananaEl.remove();
 }
 
 /* ==========================================
-   EVENTO 67 E RECOMPENSAS
+   EVENTO 67 (AGORA COM 3 SEGUNDOS)
 ========================================== */
 function ativarEvento67() {
     if (evento67Ativo) return;
     evento67Ativo = true;
 
-    const audio = new Audio('assets/musica67.mp3'); //
+    const audio = new Audio('assets/musica67.mp3'); 
     audio.play();
 
-    body.style.backgroundImage = "url('assets/fundo67.jpg')"; //
+    body.style.backgroundImage = "url('assets/fundo67.jpg')";
     body.style.backgroundSize = "cover";
 
     const gif = document.createElement('img');
-    gif.src = 'assets/gif67.gif'; //
+    gif.src = 'assets/gif67.gif';
     gif.id = 'tempGif'; 
     gif.style.cssText = `position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 450px; z-index: 10000; border: 8px solid white; border-radius: 15px;`;
     document.body.appendChild(gif);
 
+    // TEMPO REDUZIDO PARA 3 SEGUNDOS
     setTimeout(() => {
         body.style.backgroundImage = "none";
         const el = document.getElementById('tempGif');
         if (el) el.remove();
-        
-        audio.pause(); //
+        audio.pause(); 
         audio.currentTime = 0;
         evento67Ativo = false;
-    }, 5000); 
+    }, 3000); 
 }
 
 function perderVida() {
@@ -184,9 +192,8 @@ function perderVida() {
 
 function checkReward() {
     if (bananaCount === 67) ativarEvento67();
-    
     if (bananaCount % 100 === 0 && bananaCount <= 300 && bananaCount > 0) {
-        body.style.backgroundImage = `url('assets/foto${bananaCount / 100}.jpg')`; //
+        body.style.backgroundImage = `url('assets/foto${bananaCount / 100}.jpg')`;
         body.style.backgroundSize = 'cover';
         setTimeout(() => body.style.backgroundImage = 'none', 5000);
     }
@@ -198,9 +205,8 @@ function checkReward() {
 function criarItemEspecial() {
     const sorteio = Math.floor(Math.random() * 4) + 1;
     const especial = document.createElement('img');
-    especial.src = `assets/especial${sorteio}.jpg`; //
+    especial.src = `assets/especial${sorteio}.jpg`;
     especial.style.cssText = `position: fixed; top: -150px; width: 120px; z-index: 9999; border: 5px solid purple; cursor: pointer; left: ${Math.random() * (window.innerWidth - 120)}px;`;
-    
     document.body.appendChild(especial);
     let topPos = -150;
     const fallInterval = setInterval(() => {
