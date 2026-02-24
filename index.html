@@ -1,23 +1,20 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <title>Coletor de Bananas | Jogo Interativo</title>
-    <meta name="description" content="Colete bananas no modo original ou teste seus reflexos no modo teclado!">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <title>Coletor de Bananas | Super Edition</title>
+    <meta name="description" content="Colete bananas no modo original ou teclado!">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
-    <meta property="og:title" content="Coletor de Bananas">
-    <meta property="og:description" content="Passe o mouse ou use o teclado para coletar bananas!">
-    <meta property="og:type" content="website">
-
     <link rel="stylesheet" href="style.css">
     <style>
-        /* Estilo rápido para o menu não ficar bagunçado */
+        /* Estilos críticos para limpar a interface */
         #menu {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 80vh;
+            height: 100vh;
             gap: 20px;
         }
         .btn-modo {
@@ -28,18 +25,52 @@
             border: none;
             background-color: #ffe135;
             font-weight: bold;
+            box-shadow: 0 4px #ccb100;
             transition: transform 0.2s;
         }
-        .btn-modo:hover {
-            transform: scale(1.1);
+        .btn-modo:active {
+            transform: scale(0.95);
         }
-        /* Esconde o input mas mantém funcional para o celular */
+
+        /* Barra de Status Corrigida (Fundo sólido para leitura clara) */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: #ffffff; /* Fundo branco sólido */
+            z-index: 10001;
+            border-bottom: 3px solid #ffe135;
+            padding: 10px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .header__stats {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            width: 100%;
+            max-width: 500px;
+            font-size: 2.2rem; /* Aumentado para facilitar a visão */
+            font-weight: bold;
+        }
+        #instrucao {
+            margin: 5px 0 0 0;
+            font-size: 1.1rem;
+            color: #333;
+            font-weight: 600;
+        }
+
+        /* Espaço para as bananas começarem abaixo da barra */
+        .game {
+            margin-top: 100px;
+        }
+
         #mobileKeyboardTrigger {
             position: absolute;
             top: -100px;
-            left: -100px;
             opacity: 0;
-            pointer-events: none;
         }
     </style>
 </head>
@@ -49,29 +80,27 @@
 <input type="text" id="mobileKeyboardTrigger" autocorrect="off" autocapitalize="off">
 
 <div id="menu">
-    <h1 class="header__title">Escolha seu Modo</h1>
-    <button class="btn-modo" onclick="iniciarJogo('original')">🍌 Modo Original (Mouse)</button>
-    <button class="btn-modo" onclick="iniciarJogo('tecla')">⌨️ Modo Tecla Banana</button>
+    <h1 class="header__title">🍌 Coletor de Bananas</h1>
+    <p>Escolha seu modo de jogo:</p>
+    <button class="btn-modo" onclick="iniciarJogo('original')">🖱️ Modo Original (Mouse)</button>
+    <button class="btn-modo" onclick="iniciarJogo('tecla')">⌨️ Modo Tecla (Celular/PC)</button>
 </div>
 
 <div id="game-container" style="display: none;">
     <header class="header">
-        <h1 class="header__title">🍌 Coletor de Bananas</h1>
-        <p class="header__subtitle" id="instrucao">Prepare-se!</p>
+        <div class="header__stats">
+            <div class="stat-item">🍌 <span id="bananaCount">0</span></div>
+            <div class="stat-item" style="color: red;">❤️ <span id="livesCount">60</span></div>
+        </div>
+        <p id="instrucao">Prepare-se!</p>
     </header>
 
-    <main class="game" role="main">
-        <section class="game__status" aria-live="polite">
-            <h2 class="game__counter">
-                Bananas: <span id="bananaCount">0</span>
-            </h2>
-        </section>
-
+    <main class="game">
         <section class="game__area" id="gameArea"></section>
 
         <section class="game__reward" id="rewardSection" hidden>
             <h2 class="game__reward-title">Parabéns!</h2>
-            <img id="rewardImage" class="game__reward-image" alt="Imagem de recompensa">
+            <img id="rewardImage" class="game__reward-image" alt="Recompensa">
         </section>
 
         <section class="game__final" id="finalSection" hidden>
@@ -86,8 +115,8 @@
     </main>
 </div>
 
-<footer class="footer">
-    <p class="footer__text">© 2026 Coletor de Bananas</p>
+<footer class="footer" style="position: fixed; bottom: 5px; width: 100%; text-align: center; opacity: 0.3; pointer-events: none;">
+    <p>© 2026 Coletor de Bananas</p>
 </footer>
 
 <script src="script.js" defer></script>
